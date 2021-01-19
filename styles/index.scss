@@ -1,0 +1,33 @@
+@import 'reset';
+@import 'normalize';
+@import 'fonts';
+
+body {
+  font-family: 'Inter';
+  font-weight: 400;
+}
+
+.flex {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.flex_item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+}
+
+.canvas {
+  min-width: 350px;
+  min-height: 350px;
+}
+
+@media (min-width: 1000px) {
+  .canvas {
+    max-width: 40vw;
+  }
+}
