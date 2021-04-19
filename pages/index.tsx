@@ -13,7 +13,7 @@ export default function Home(): JSX.Element {
   useEffect(() => {
     if (!canvasRef1 && !canvasRef2) return;
 
-    const img_path = 'manga.jpg';
+    const img_path = 'vagabond1.png';
 
     (async () => {
       await openCvReady();

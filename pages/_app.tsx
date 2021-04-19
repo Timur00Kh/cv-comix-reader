@@ -6,6 +6,7 @@ import { LayoutTree } from '@moxy/next-layout';
 import { PrimaryLayout } from '@/layouts/PrimaryLayout';
 import { useStore } from '@/store/store';
 import '@/styles/index.scss';
+import 'react-input-range/lib/css/index.css';
 
 function App({ Component, pageProps }: AppProps): JSX.Element {
   const store = useStore(pageProps.initialReduxState);
