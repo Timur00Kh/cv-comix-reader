@@ -9,6 +9,7 @@ declare namespace cv {
   const CV_8UC1: CvConstant;
   const CV_8U: CvConstant;
   const MORPH_OPEN: CvConstant;
+  const MORPH_CLOSE: CvConstant;
   const BORDER_CONSTANT: CvConstant;
   const LINE_8: CvConstant;
   const INT_MAX: CvConstant;
@@ -37,6 +38,8 @@ declare namespace cv {
 
   class MatVector {
     constructor();
+
+    clone(): MatVector;
 
     // eslint-disable-next-line camelcase
     push_back(mat: Mat): void;
