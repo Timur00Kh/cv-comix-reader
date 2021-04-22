@@ -40,7 +40,7 @@ export default function Home(): JSX.Element {
     if (!canvasRef1 && imgPath) return;
 
     (async () => {
-      console.log('start process');
+      console.log(`start process for: ${imgPath}`);
       await openCvReady();
 
       const canvas1 = canvasRef1.current;
@@ -48,9 +48,10 @@ export default function Home(): JSX.Element {
       const img = await loadImage(imgPath);
       cv.imshow(canvas1, cv.imread(img));
 
-      const mats$ = FrameSelector.getFrameSelectSteps2(img);
+      const mats$ = FrameSelector.getFrameSelectSteps(img);
       setMats(mats$);
       // setRangeValue(mats$.length - 1);
+      console.log(`end process for: ${imgPath}`);
     })();
   }, [imgPath]);
 

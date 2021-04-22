@@ -146,6 +146,38 @@ export class FrameSelector {
     return result;
   }
 
+  static getBounding(contours: cv.MatVector): cv.Rect[] {
+    const arr = [];
+    for (let i = 0; i < contours.size(); i += 1) {
+      let c = contours.get(i);
+      // cv.drawContours(c, contours, i, new cv.Scalar(0, 0, 0), -1);
+      const rect = cv.boundingRect(c);
+      arr.push(rect);
+    }
+    return arr;
+  }
+
+  static drawRectangles(img: cv.Mat, rects: cv.Rect[]): cv.Mat {
+    let result = img.clone();
+    for (let i = 0; i < rects.length; i += 1) {
+      // let color = new cv.Scalar(
+      //   Math.round(Math.random() * 255),
+      //   Math.round(Math.random() * 255),
+      //   Math.round(Math.random() * 255)
+      // );
+      let color = new cv.Scalar(255, 255, 255);
+      const rect = rects[i];
+      cv.rectangle(
+        result,
+        new cv.Point(rect.x, rect.y),
+        new cv.Point(rect.x + rect.width, rect.y + rect.height),
+        color,
+        3
+      );
+    }
+    return result;
+  }
+
   static getFrameSelectSteps(
     img: HTMLImageElement,
     options?: FrameSelectStepsOptions
@@ -159,10 +191,15 @@ export class FrameSelector {
       original
     );
     let filledContours = this.fillContours(contours, original);
-    let convexHullContours = this.drawConvexHullContours(contours, original);
-    let convexHullResult = this.morphologyOpen(convexHullContours, 20);
     let closed = this.morphologyClose(filledContours, 100);
     let result = this.morphologyOpen(closed, 50);
+    let convexHullContours = this.drawConvexHullContours(contours, original);
+    let convexHullResult = this.morphologyOpen(convexHullContours, 20);
+
+    let greyscale2 = this.grayscale(convexHullResult);
+    const rects = this.getBounding(this.findContours(greyscale2));
+    console.log(rects);
+    const drawnRects = this.drawRectangles(convexHullResult, rects);
 
     return [
       original,
@@ -173,7 +210,12 @@ export class FrameSelector {
       closed,
       result,
       convexHullContours,
-      convexHullResult
+      convexHullResult,
+      this.drawContoursRandomColors(
+        this.findContours(greyscale2),
+        convexHullResult
+      ),
+      drawnRects
     ];
   }
 

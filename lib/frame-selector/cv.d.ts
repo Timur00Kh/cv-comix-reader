@@ -16,6 +16,13 @@ declare namespace cv {
   const RETR_TREE: CvConstant;
   const CHAIN_APPROX_SIMPLE: CvConstant;
 
+  type Rect = {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  };
+
   function imread(img: HTMLImageElement): Mat;
 
   function imshow(canvas: HTMLCanvasElement, mat: Mat);
@@ -105,6 +112,26 @@ declare namespace cv {
     clockwise = false,
     returnPoints = true
   ): void;
+
+  function boundingRect(array: Mat): Rect;
+
+  function rectangle(
+    img: Mat,
+    pt1: Point,
+    pt2: Point,
+    color: Scalar,
+    thickness = 1,
+    lineType: CvConstant | number = LINE_8,
+    shift = 0
+  );
+  function rectangle(
+    img: Mat,
+    rec: Rect,
+    color: Scalar,
+    thickness = 1,
+    lineType: CvConstant | number = LINE_8,
+    shift = 0
+  );
 
   let onRuntimeInitialized;
 }
