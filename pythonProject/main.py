@@ -234,6 +234,11 @@ fs = FrameSelector()
 iterations = 10000
 with open('results/' + str(time.time()) + '.csv', 'w', newline='') as f:
     writer = csv.writer(f)
+    writer.writerow(['i', 'fileName', 'tresh', 'maxVal',
+                     'xO', 'yO', 'iterationsO', 'shapeO',
+                     'xC', 'yC', 'iterationsC', 'shapeC',
+                     'filterRects',
+                     'compare', 'compare2'])
 
     for testImage in testData:
         image = cv2.imread('images/' + testImage['fileName'])
@@ -243,12 +248,12 @@ with open('results/' + str(time.time()) + '.csv', 'w', newline='') as f:
             xO = uniform(0.001, 2.0)
             yO = uniform(0.001, 2.0)
             iterationsO = randrange(10)
-            so = randrange(0, 2)
+            so = randrange(0, 3)
             shapeO = morphTypes[so]
             xC = uniform(0.001, 2.0)
             yC = uniform(0.001, 2.0)
             iterationsC = randrange(10)
-            sc = randrange(0, 2)
+            sc = randrange(0, 3)
             shapeC = morphTypes[sc]
             filterRects = randrange(2, 10)
 
