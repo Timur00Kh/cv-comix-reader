@@ -6,6 +6,10 @@ import json
 from random import randrange, uniform
 from functools import cmp_to_key
 from operator import itemgetter
+import csv
+import time
+
+
 
 
 filename = 'images/vagabond1.png'
@@ -155,8 +159,8 @@ class FrameSelector:
         if len(testRects) != len(rects):
             return 0
 
-        srects1 = sorted(map(lambda item: item + getCenterPoint(item), testRects), key=itemgetter(4,5))
-        srects2 = sorted(map(lambda item: item + getCenterPoint(item), rects), key=itemgetter(4,5))
+        srects1 = sorted(map(lambda item: tuple(item) + getCenterPoint(item), testRects), key=itemgetter(4,5))
+        srects2 = sorted(map(lambda item: tuple(item) + getCenterPoint(item), rects), key=itemgetter(4,5))
         srects1 = [x[:-2] for x in srects1]
         srects2 = [x[:-2] for x in srects2]
 
@@ -216,51 +220,66 @@ fs = FrameSelector()
 # plt.show()
 # exit(0)
 
-for testImage in testData:
-    image = cv2.imread('images/' + testImage['fileName'])
-    for i in range(100):
-        tresh = randrange(255)
-        maxVal = randrange(255)
-        xO = uniform(0.001, 2.0)
-        yO = uniform(0.001, 2.0)
-        iterationsO = randrange(10)
-        so = randrange(0, 2)
-        shapeO = morphTypes[so]
-        xC = uniform(0.001, 2.0)
-        yC = uniform(0.001, 2.0)
-        iterationsC = randrange(10)
-        sc = randrange(0, 2)
-        shapeC = morphTypes[sc]
-        filterRects = randrange(2, 20)
+# index = 1
+# img = cv2.imread('images/' + testData[index]['fileName'])
+# rects = fs.selectFrames(img, 137, 91, 0.5, 0.5, 1, 1, 0.22, 0.2, 1, 0, 5)
+# drects = fs.drawRectangles(img, rects)
+# compare = fs.compareRects2(img, rects, testData[index]['rects'])
+# print(compare)
+# plt.subplot(121), plt.imshow(img)
+# plt.subplot(122), plt.imshow(drects)
+# plt.show()
+# exit(0)
+
+iterations = 10000
+with open('results/' + str(time.time()) + '.csv', 'w', newline='') as f:
+    writer = csv.writer(f)
+
+    for testImage in testData:
+        image = cv2.imread('images/' + testImage['fileName'])
+        for i in range(iterations):
+            tresh = randrange(255)
+            maxVal = randrange(255)
+            xO = uniform(0.001, 2.0)
+            yO = uniform(0.001, 2.0)
+            iterationsO = randrange(10)
+            so = randrange(0, 2)
+            shapeO = morphTypes[so]
+            xC = uniform(0.001, 2.0)
+            yC = uniform(0.001, 2.0)
+            iterationsC = randrange(10)
+            sc = randrange(0, 2)
+            shapeC = morphTypes[sc]
+            filterRects = randrange(2, 10)
 
 
 
-        try:
-            rects = fs.selectFrames(image,
-                                    tresh, maxVal,
-                                    xO, yO, iterationsO, shapeO,
-                                    xC, yC, iterationsC, shapeC,
-                                    filterRects
-                                    )
-            compare = fs.compareRects(image, rects, testImage['rects'])
-            compare2 = fs.compareRects2(image, rects, testImage['rects'])
-        except BaseException:
-            compare = 'error'
-            compare2 = 'error'
+            try:
+                rects = fs.selectFrames(image,
+                                        tresh, maxVal,
+                                        xO, yO, iterationsO, shapeO,
+                                        xC, yC, iterationsC, shapeC,
+                                        filterRects
+                                        )
+                compare = fs.compareRects(image, rects, testImage['rects'])
+                compare2 = fs.compareRects2(image, rects, testImage['rects'])
+            except BaseException:
+                compare = 'error'
+                compare2 = 'error'
+
+            params = [i, testImage['fileName'], tresh, maxVal,
+                      xO, yO, iterationsO, shapeO,
+                      xC, yC, iterationsC, shapeC,
+                      filterRects,
+                      compare, compare2
+                      ]
+            testResult.append(params)
+
+            print(params)
+        writer.writerows(testResult)
+        testResult = []
 
 
-
-        testResult.append([tresh, maxVal,
-                           xO, yO, iterationsO, shapeO,
-                           xC, yC, iterationsC, shapeC,
-                           filterRects,
-                           compare, compare2
-                           ])
-
-        print(i, tresh, maxVal,
-              xO, yO, iterationsO, shapeO,
-              xC, yC, iterationsC, shapeC,
-              filterRects, compare, compare2)
 
 
 print(testResult)
