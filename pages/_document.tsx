@@ -16,6 +16,7 @@ class Document extends DocumentNext {
             content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
           />
           <script src="opencv.js" />
+          <script src="openCvReady.js" />
         </Head>
         <body>
           <Main />
