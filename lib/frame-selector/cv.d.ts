@@ -15,6 +15,8 @@ declare namespace cv {
   const INT_MAX: CvConstant;
   const RETR_TREE: CvConstant;
   const CHAIN_APPROX_SIMPLE: CvConstant;
+  const ADAPTIVE_THRESH_MEAN_C: CvConstant;
+  const ADAPTIVE_THRESH_GAUSSIAN_C: CvConstant;
 
   type Rect = {
     x: number;
@@ -70,6 +72,16 @@ declare namespace cv {
     thresh: number,
     maxval: number,
     type: CvConstant | number
+  ): void;
+
+  function adaptiveThreshold(
+    src: Mat,
+    dst: Mat,
+    maxValue: number,
+    adaptiveMethod: CvConstant | number,
+    thresholdType: CvConstant | number,
+    blockSize: number,
+    C: number
   ): void;
 
   function findContours(

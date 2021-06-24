@@ -63,6 +63,27 @@ export class FrameSelector {
     return result;
   }
 
+  static adaptiveThreshold(
+    src: cv.Mat,
+    maxValue: number,
+    adaptiveMethod: CvConstant | number,
+    thresholdType: CvConstant | number,
+    blockSize: number,
+    C: number
+  ): cv.Mat {
+    let result = src.clone();
+    cv.adaptiveThreshold(
+      src,
+      result,
+      maxValue,
+      adaptiveMethod,
+      thresholdType,
+      blockSize,
+      C
+    );
+    return result;
+  }
+
   static findContours(src: cv.Mat): cv.MatVector {
     let contours = new cv.MatVector();
     let hierarchy = new cv.Mat();
