@@ -40,6 +40,8 @@ declare namespace cv {
 
     clone(): Mat;
 
+    delete(): void;
+
     static zeros(rows: number, cols: number, type: CvConstant | number): Mat;
 
     static ones(rows: number, cols: number, type: CvConstant | number): Mat;

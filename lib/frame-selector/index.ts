@@ -122,9 +122,7 @@ export class FrameSelector {
     color: cv.Scalar = new cv.Scalar(255, 0, 0)
   ): cv.Mat {
     let result = cv.Mat.zeros(image.rows, image.cols, cv.CV_8UC3);
-    for (let i = 0; i < contours.size(); i += 1) {
-      cv.drawContours(result, contours.clone(), i, color, -1, cv.LINE_8);
-    }
+    cv.drawContours(result, contours.clone(), -1, color, -1, cv.LINE_8);
     return result;
   }
 
@@ -272,6 +270,50 @@ export class FrameSelector {
       result,
       convexHullContours,
       convexHullResult
+    ];
+  }
+
+  static getFrameSelectSteps3(
+    img: HTMLImageElement,
+    options?: FrameSelectStepsOptions
+  ): cv.Mat[] {
+    let original = cv.imread(img);
+    let greyscale = this.grayscale(original);
+    let threshold = this.adaptiveThreshold(
+      greyscale,
+      255,
+      cv.ADAPTIVE_THRESH_GAUSSIAN_C,
+      cv.THRESH_BINARY_INV,
+      5,
+      7
+    );
+    let contours1 = this.findContours(threshold);
+    // let randomColorsContours = this.drawContoursRandomColors(
+    //   contours1,
+    //   original
+    // );
+    let filledContours1 = this.fillContours(contours1, original);
+    let close = this.morphologyClose(filledContours1, 250);
+    let greyscale2 = this.grayscale(close);
+    let contours = this.findContours(greyscale2);
+    // let randomColorsContours2 = this.drawContoursRandomColors(
+    //   contours,
+    //   original
+    // );
+
+    let filledContours = this.fillContours(contours, original);
+    let open = this.morphologyOpen(filledContours, 250);
+
+    return [
+      original,
+      greyscale,
+      threshold,
+      // randomColorsContours,
+      filledContours1,
+      close,
+      // randomColorsContours2,
+      filledContours,
+      open
     ];
   }
 
