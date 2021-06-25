@@ -45,6 +45,21 @@ def rectIntersection(a,b):
 
 cmp_rects_py3 = cmp_to_key(cmp_rects)
 
+def distance(pt_1, pt_2):
+    pt_1 = np.array((pt_1[0], pt_1[1]))
+    pt_2 = np.array((pt_2[0], pt_2[1]))
+    return np.linalg.norm(pt_1-pt_2)
+
+def closest_rect(rect, rects, thresh):
+    pt = None
+    dist = 9999999
+    for r in rects:
+        d = distance((rect[4], rect[5]), (r[4], r[5]))
+        if d <= dist and d < thresh:
+            dist = d
+            pt = r
+    return pt
+
 
 class FrameSelector:
     def grayscale(self, mat):
@@ -156,22 +171,25 @@ class FrameSelector:
         return score
 
     def compareRects2(self, image, testRects, rects):
-        if len(testRects) != len(rects):
+        if len(testRects) < 2:
             return 0
 
         srects1 = sorted(map(lambda item: tuple(item) + getCenterPoint(item), testRects), key=itemgetter(4,5))
         srects2 = sorted(map(lambda item: tuple(item) + getCenterPoint(item), rects), key=itemgetter(4,5))
-        srects1 = [x[:-2] for x in srects1]
-        srects2 = [x[:-2] for x in srects2]
 
-        l = len(srects1)
+        distanceThresh = 150
+        l = max(len(srects2), len(srects1))
         sum = 0
-        for i in range(l):
-            testRect = srects1[i]
-            rect = srects2[i]
+        for rect in srects2:
+            if len(srects1) > 0:
+                testRect = closest_rect(rect, srects1, distanceThresh)
+                if testRect != None:
+                    srects1.remove(testRect)
 
-            res = self.compareRects(image, [testRect], [rect])
-            sum += res
+                    res = self.compareRects(image, [testRect[:-2]], [rect[:-2]])
+                    sum += res
+            else:
+                break
 
         return sum / l
 
