@@ -52,6 +52,11 @@ export default function Home(): JSX.Element {
       setMats(mats$);
       // setRangeValue(mats$.length - 1);
       console.log(`end process for: ${imgPath}`);
+
+      return () => {
+        mats$.forEach((e) => e.delete());
+        setMats([]);
+      };
     })();
   }, [imgPath]);
 
