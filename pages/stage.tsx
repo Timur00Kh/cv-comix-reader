@@ -47,11 +47,11 @@ const items: Item[] = _images;
 // ];
 
 export default function Stage(): JSX.Element {
-  const [curr] = useState(items[0]);
+  const [curr] = useState(items[6]);
 
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
-      <StageComponent img={curr.img} rects={curr.rects} />;
+      <StageComponent img={curr.img} rects={curr.rects} />
     </div>
   );
 }
