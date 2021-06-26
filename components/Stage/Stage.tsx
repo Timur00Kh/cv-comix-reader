@@ -4,6 +4,7 @@ import classes from './Stage.module.scss';
 interface Props {
   img: string;
   rects: cv.Rect[];
+  onPageRead?: () => void;
 }
 
 export const StageComponent: React.FC<Props> = ({ img, rects }) => {
@@ -14,30 +15,36 @@ export const StageComponent: React.FC<Props> = ({ img, rects }) => {
   useEffect(() => {
     if (!imgRef.current) return;
 
-    setCurrentRects([
+    setCurrentRects((cr) => [
       {
         x: 0,
         y: 0,
-        width: 0,
-        height: 0
+        width: imgRef.current?.naturalWidth,
+        height: imgRef.current?.naturalHeight
       },
-      ...currentRects
+      ...cr
     ]);
-  }, [imgRef, currentRects]);
+  }, [imgRef]);
 
   const computedStyles = useMemo<React.CSSProperties>(() => {
     const r = currentRects[i];
+    const imgWidth = imgRef.current?.naturalWidth;
+    const imgHeight = imgRef.current?.naturalHeight;
+    const sX = r.width / imgWidth;
+    const sY = r.height / imgHeight;
+    const s = 1 + Math.min(sX, sY);
+    const s$ = s * 100;
+    const x$ = (r.x / imgWidth) * 100;
+    const y$ = (r.y / imgHeight) * 100;
 
     return {
-      transform: `translate(${r.x}px, ${-r.y}px) scale(${
-        1 || ((r.x - r.width) / imgRef.current?.naturalWidth || 100) / 100
-      })`
+      transform: `translate(${-x$}%, ${-y$}%)`
     };
   }, [i, currentRects]);
 
   useEffect(() => {
-    const r = () => setI(i < currentRects.length - 1 ? i + 1 : i);
-    const l = () => setI(i > 0 ? i - 1 : 0);
+    const r = () => setI((i$) => (i$ < currentRects.length - 1 ? i$ + 1 : i$));
+    const l = () => setI((i$) => (i$ > 0 ? i$ - 1 : 0));
 
     const callback = (e: KeyboardEvent) => {
       if (e.code === 'ArrowLeft') {
@@ -53,15 +60,20 @@ export const StageComponent: React.FC<Props> = ({ img, rects }) => {
 
   return (
     <div>
+      <pre className={classes.pre}>
+        <b>{i}:</b> {JSON.stringify(currentRects[i], null, 2)}
+        <br />
+        <b>styles:</b> {JSON.stringify(computedStyles, null, 2)}
+      </pre>
       <div className={classes.stage}>
-        <img
-          alt="1123"
-          src={img}
+        <div
           style={{
-            height: '100%',
             ...computedStyles
           }}
-        />
+          className={classes.inner}
+        >
+          <img alt="1123" src={img} ref={imgRef} />
+        </div>
       </div>
     </div>
   );
