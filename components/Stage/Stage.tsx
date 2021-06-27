@@ -6,45 +6,52 @@ import React, {
   useState
 } from 'react';
 import useImage from '@/hooks/useImage';
+import { Motion, spring } from 'react-motion';
 import classes from './Stage.module.scss';
+import PanelSorter from '@/lib/PanelSorter';
 
 interface Props {
   img: string;
   rects: cv.Rect[];
-  onPageRead?: () => void;
+  prevPage?: () => void;
+  nextPage?: () => void;
 }
 
-export const StageComponent: React.FC<Props> = ({ img, rects }) => {
-  const [currentRects, setCurrentRects] = useState<cv.Rect[]>(rects);
+export const StageComponent: React.FC<Props> = ({
+  img,
+  rects,
+  nextPage,
+  prevPage
+}) => {
   const [i, setI] = useState<number>(0);
+  const refI = useRef<number>(i);
+  useEffect(() => {
+    refI.current = i;
+  }, [i]);
   const imgRef = useRef<HTMLImageElement>();
   const [image] = useImage(img);
 
   useEffect(() => {
-    if (!imgRef.current) return;
+    setI(0);
+  }, [img]);
 
-    setCurrentRects((cr) => [
-      {
-        x: 0,
-        y: 0,
-        width: imgRef.current?.naturalWidth,
-        height: imgRef.current?.naturalHeight
-      },
-      ...cr
-    ]);
-  }, [imgRef]);
+  const currentRects = useMemo(() => {
+    const sorted = rects.sort(PanelSorter.leftToRight);
 
-  const computedStyles = useMemo<{
-    translate: CSSProperties;
-    scale: CSSProperties;
-  }>(() => {
+    const pageRect = {
+      x: 0,
+      y: 0,
+      width: image?.naturalWidth || 0,
+      height: image?.naturalHeight || 0
+    };
+
+    return [pageRect, ...sorted, pageRect];
+  }, [rects, image]);
+
+  const computedStyles = useMemo<number[]>(() => {
     const r = currentRects[i];
 
-    if (!r || !image)
-      return {
-        translate: {},
-        scale: {}
-      };
+    if (!r || !image) return [0, 0, 1];
 
     const cX = r.x + r.width / 2;
     const cY = r.y + r.height / 2;
@@ -62,31 +69,53 @@ export const StageComponent: React.FC<Props> = ({ img, rects }) => {
     const x$ = (r.x / imgWidth) * 100;
     const y$ = (r.y / imgHeight) * 100;
 
-    return {
-      translate: {
-        transform: `translate(${-x$}%, ${-y$}%)`
-      },
-      scale: {
-        transform: `scale(${s$}%, ${s$}%)`
-      }
-    };
+    return [-x$, -y$, s$];
+
+    // return {
+    //   translate: {
+    //     transform: `translate(${-x$}%, ${-y$}%)`
+    //   },
+    //   scale: {
+    //     transform: `scale(${s$}%, ${s$}%)`
+    //   }
+    // };
   }, [i, currentRects, image]);
 
-  useEffect(() => {
-    const r = () => setI((i$) => (i$ < currentRects.length - 1 ? i$ + 1 : i$));
-    const l = () => setI((i$) => (i$ > 0 ? i$ - 1 : 0));
+  const nextPanel = () => {
+    if (refI.current < currentRects.length - 1) {
+      setI((i$) => i$ + 1);
+    } else {
+      nextPage();
+    }
+  };
+  const prevPanel = () => {
+    if (refI.current > 0) {
+      setI((i$) => i$ - 1);
+    } else {
+      prevPage();
+    }
+  };
 
+  useEffect(() => {
     const callback = (e: KeyboardEvent) => {
       if (e.code === 'ArrowLeft') {
-        l();
+        prevPanel();
       } else if (e.code === 'ArrowRight') {
-        r();
+        nextPanel();
       }
     };
 
     window.addEventListener('keydown', callback);
     return () => window.removeEventListener('keydown', callback);
-  }, []);
+  }, [currentRects, nextPage, prevPage]);
+
+  const onStageClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.clientX > window.innerWidth / 2) {
+      nextPanel();
+    } else {
+      prevPanel();
+    }
+  };
 
   return (
     <>
@@ -95,25 +124,36 @@ export const StageComponent: React.FC<Props> = ({ img, rects }) => {
         <br />
         <b>styles:</b> {JSON.stringify(computedStyles, null, 2)}
       </pre>
-      <div className={classes.stage}>
-        <div className={classes.inner}>
-          <div
-            className={classes.scale}
-            style={{
-              ...computedStyles.scale
-            }}
-          >
-            <img
-              style={{
-                ...computedStyles.translate
-              }}
-              alt="1123"
-              src={img}
-              ref={imgRef}
-            />
+      <Motion
+        defaultStyle={{ x: 0, y: 0, s: 1 }}
+        style={{
+          x: spring(computedStyles[0]),
+          y: spring(computedStyles[1]),
+          s: spring(computedStyles[2])
+        }}
+      >
+        {(values) => (
+          <div className={classes.stage} onClick={onStageClick}>
+            <div className={classes.inner}>
+              <div
+                className={classes.scale}
+                style={{
+                  transform: `scale(${values.s}%, ${values.s}%)`
+                }}
+              >
+                <img
+                  style={{
+                    transform: `translate(${values.x}%, ${values.y}%)`
+                  }}
+                  alt="1123"
+                  src={img}
+                  ref={imgRef}
+                />
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+        )}
+      </Motion>
     </>
   );
 };

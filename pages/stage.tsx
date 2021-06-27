@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { StageComponent } from '@/components/Stage/Stage';
 import _images from '@/pages/_images';
 
@@ -47,11 +47,20 @@ const items: Item[] = _images;
 // ];
 
 export default function Stage(): JSX.Element {
-  const [curr] = useState(items[6]);
+  const [i, setI] = useState<number>(0);
+  const curr = useMemo(() => items[i], [i]);
+
+  const r = () => setI((i$) => (i$ < items.length - 1 ? i$ + 1 : i$));
+  const l = () => setI((i$) => (i$ > 0 ? i$ - 1 : 0));
 
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
-      <StageComponent img={curr.img} rects={curr.rects} />
+      <StageComponent
+        img={curr.img}
+        rects={curr.rects}
+        nextPage={r}
+        prevPage={l}
+      />
     </div>
   );
 }
