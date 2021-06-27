@@ -1,11 +1,11 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import useImage from '@/hooks/useImage';
 import { Motion, spring } from 'react-motion';
-import classes from './Stage.module.scss';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/root-reducer';
 import { ReadOrder } from '@/store/settings';
 import PanelSorter from '@/lib/PanelSorter';
+import classes from './Stage.module.scss';
 
 interface Props {
   img: string;
@@ -34,11 +34,13 @@ export const StageComponent: React.FC<Props> = ({
   }, [img]);
 
   const currentRects = useMemo(() => {
-    const sorted = rects.sort(
-      settings.readOrder === ReadOrder.leftToRight
-        ? PanelSorter.leftToRight
-        : PanelSorter.rightToLeft
-    );
+    const sorted = rects
+      .slice()
+      .sort(
+        settings.readOrder === ReadOrder.leftToRight
+          ? PanelSorter.leftToRight
+          : PanelSorter.rightToLeft
+      );
 
     const pageRect = {
       x: 0,

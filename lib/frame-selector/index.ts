@@ -238,6 +238,21 @@ export class FrameSelector {
     ];
   }
 
+  static getPanelsRects(
+    img: HTMLImageElement,
+    options?: FrameSelectStepsOptions
+  ): cv.Rect[] {
+    let original = cv.imread(img);
+    let greyscale = this.grayscale(original);
+    let threshold = this.threshold(greyscale, 30, 80);
+    let contours = this.findContours(threshold);
+    let convexHullContours = this.drawConvexHullContours(contours, original);
+    let convexHullResult = this.morphologyOpen(convexHullContours, 20);
+
+    let greyscale2 = this.grayscale(convexHullResult);
+    return this.getBounding(this.findContours(greyscale2));
+  }
+
   static getFrameSelectSteps2(
     img: HTMLImageElement,
     options?: FrameSelectStepsOptions
