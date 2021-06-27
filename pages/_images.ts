@@ -77,25 +77,25 @@ const _images: Item[] = [
   };
 });
 
-console.table(
-  [
-    // [510, 0, 291, 329],
-    // [511, 353, 291, 212],
-    // [0, 0, 503, 566],
-    // [329, 587, 473, 155],
-    // [0, 589, 322, 153],
-    // [439, 766, 363, 434],
-    // [0, 766, 430, 434]
-    [0, 0, 491, 348],
-    [498, 0, 312, 564],
-    [0, 369, 491, 195],
-    [0, 585, 811, 615]
-  ].map((rect) => {
-    const [x, y, width, height] = rect;
-    const cx = Math.round(x + width / 2);
-    const cy = Math.round(y + height / 2);
-    return { x, y, width, height, cx, cy };
-  })
-);
+// console.table(
+//   [
+//     // [510, 0, 291, 329],
+//     // [511, 353, 291, 212],
+//     // [0, 0, 503, 566],
+//     // [329, 587, 473, 155],
+//     // [0, 589, 322, 153],
+//     // [439, 766, 363, 434],
+//     // [0, 766, 430, 434]
+//     [0, 0, 491, 348],
+//     [498, 0, 312, 564],
+//     [0, 369, 491, 195],
+//     [0, 585, 811, 615]
+//   ].map((rect) => {
+//     const [x, y, width, height] = rect;
+//     const cx = Math.round(x + width / 2);
+//     const cy = Math.round(y + height / 2);
+//     return { x, y, width, height, cx, cy };
+//   })
+// );
 
 export default _images;

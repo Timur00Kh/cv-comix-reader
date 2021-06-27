@@ -1,6 +1,5 @@
 import React from 'react';
-import { Header } from '@/components/Header';
-import { Footer } from '@/components/Footer';
+import HrumNavbar from '@/components/HrumNavbar';
 
 interface IPrimaryLayoutProps {
   children?: JSX.Element;
@@ -9,6 +8,7 @@ interface IPrimaryLayoutProps {
 export function PrimaryLayout({ children }: IPrimaryLayoutProps): JSX.Element {
   return (
     <div>
+      <HrumNavbar />
       <main>{children}</main>
     </div>
   );

@@ -1,13 +1,10 @@
-import React, {
-  CSSProperties,
-  useEffect,
-  useMemo,
-  useRef,
-  useState
-} from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import useImage from '@/hooks/useImage';
 import { Motion, spring } from 'react-motion';
 import classes from './Stage.module.scss';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store/root-reducer';
+import { ReadOrder } from '@/store/settings';
 import PanelSorter from '@/lib/PanelSorter';
 
 interface Props {
@@ -23,6 +20,7 @@ export const StageComponent: React.FC<Props> = ({
   nextPage,
   prevPage
 }) => {
+  const settings = useSelector((s: RootState) => s.settings);
   const [i, setI] = useState<number>(0);
   const refI = useRef<number>(i);
   useEffect(() => {
@@ -36,7 +34,11 @@ export const StageComponent: React.FC<Props> = ({
   }, [img]);
 
   const currentRects = useMemo(() => {
-    const sorted = rects.sort(PanelSorter.leftToRight);
+    const sorted = rects.sort(
+      settings.readOrder === ReadOrder.leftToRight
+        ? PanelSorter.leftToRight
+        : PanelSorter.rightToLeft
+    );
 
     const pageRect = {
       x: 0,
@@ -46,39 +48,22 @@ export const StageComponent: React.FC<Props> = ({
     };
 
     return [pageRect, ...sorted, pageRect];
-  }, [rects, image]);
+  }, [rects, image, settings]);
 
   const computedStyles = useMemo<number[]>(() => {
     const r = currentRects[i];
 
     if (!r || !image) return [0, 0, 1];
 
-    const cX = r.x + r.width / 2;
-    const cY = r.y + r.height / 2;
-
     const imgWidth = image.naturalWidth;
     const imgHeight = image.naturalHeight;
 
-    const cX$ = (cX / imgWidth) * 100;
-    const cY$ = (cY / imgHeight) * 100;
-
-    const sX = imgWidth / r.width;
-    const sY = imgHeight / r.height;
-    const s = sX;
+    const s = imgWidth / r.width;
     const s$ = s * 100;
     const x$ = (r.x / imgWidth) * 100;
     const y$ = (r.y / imgHeight) * 100;
 
     return [-x$, -y$, s$];
-
-    // return {
-    //   translate: {
-    //     transform: `translate(${-x$}%, ${-y$}%)`
-    //   },
-    //   scale: {
-    //     transform: `scale(${s$}%, ${s$}%)`
-    //   }
-    // };
   }, [i, currentRects, image]);
 
   const nextPanel = () => {
@@ -119,11 +104,13 @@ export const StageComponent: React.FC<Props> = ({
 
   return (
     <>
-      <pre className={classes.pre}>
-        <b>{i}:</b> {JSON.stringify(currentRects[i], null, 2)}
-        <br />
-        <b>styles:</b> {JSON.stringify(computedStyles, null, 2)}
-      </pre>
+      {settings.showDebugHint && (
+        <pre className={classes.pre}>
+          <b>{i}:</b> {JSON.stringify(currentRects[i], null, 2)}
+          <br />
+          <b>styles:</b> {JSON.stringify(computedStyles, null, 2)}
+        </pre>
+      )}
       <Motion
         defaultStyle={{ x: 0, y: 0, s: 1 }}
         style={{

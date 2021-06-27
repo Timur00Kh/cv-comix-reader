@@ -3,6 +3,7 @@
 
 import React from 'react';
 import DocumentNext, { Html, Head, Main, NextScript } from 'next/document';
+import HrumNavbar from '@/components/HrumNavbar';
 
 class Document extends DocumentNext {
   render(): JSX.Element {

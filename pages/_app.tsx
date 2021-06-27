@@ -8,6 +8,7 @@ import { useStore } from '@/store/store';
 import '@/styles/index.scss';
 import 'react-input-range/lib/css/index.css';
 import openCvReady from '@/lib/frame-selector/openCvReady';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App({ Component, pageProps }: AppProps): JSX.Element {
   const store = useStore(pageProps.initialReduxState);

@@ -54,7 +54,7 @@ export default function Stage(): JSX.Element {
   const l = () => setI((i$) => (i$ > 0 ? i$ - 1 : 0));
 
   return (
-    <div style={{ width: '100vw', height: '100vh' }}>
+    <div style={{ width: '100vw', height: '100vh', position: 'relative' }}>
       <StageComponent
         img={curr.img}
         rects={curr.rects}
