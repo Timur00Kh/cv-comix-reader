@@ -3,8 +3,8 @@ import { getLocalStorageJson } from '@/utils/getLocalStorageJson';
 
 const localStorageName = 'hrum-settings';
 export enum ReadOrder {
-  leftToRight,
-  rightToLeft
+  rightToLeft,
+  leftToRight
 }
 
 // Interface
@@ -15,7 +15,7 @@ export interface ISettings {
 
 // State
 const initialState: ISettings = getLocalStorageJson(localStorageName) || {
-  readOrder: ReadOrder.leftToRight,
+  readOrder: ReadOrder.rightToLeft,
   showDebugHint: false
 };
 

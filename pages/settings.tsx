@@ -27,11 +27,11 @@ export default function Other(): JSX.Element {
   const [dropdownOpen, setOpen] = useState(false);
   const dropDownItems = [
     {
-      id: ReadOrder.leftToRight,
+      id: ReadOrder.rightToLeft,
       text: 'Left to right'
     },
     {
-      id: ReadOrder.rightToLeft,
+      id: ReadOrder.leftToRight,
       text: 'Right to left'
     }
   ];

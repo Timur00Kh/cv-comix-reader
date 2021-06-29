@@ -23,9 +23,9 @@ const HrumNavbar = (props) => {
   return (
     <div style={{ padding: '0 12px', borderBottom: 'purple 2px solid' }}>
       <Navbar color="faded" light>
-        <NavbarBrand href="/" className="mr-auto">
-          Comics Reader
-        </NavbarBrand>
+        <Link href="/">
+          <NavbarBrand className="mr-auto">Comics Reader</NavbarBrand>
+        </Link>
         <NavbarToggler onClick={toggleNavbar} className="mr-2" />
         <Collapse isOpen={!collapsed} navbar>
           <Nav navbar>

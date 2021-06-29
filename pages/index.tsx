@@ -24,8 +24,7 @@ export default function Home(): JSX.Element {
   const addComics = (c: IComics) => dispatch(addComics$(c));
 
   const onInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(e.currentTarget.files);
-
+    e.persist();
     const files = e.currentTarget?.files;
     if (files?.length) {
       const images = [];
@@ -34,17 +33,16 @@ export default function Home(): JSX.Element {
         const url = URL.createObjectURL(file);
         // eslint-disable-next-line no-await-in-loop
         const img = await loadImage(url);
-        const rects = FrameSelector.getPanelsRects(img);
+        const rects = FrameSelector.getFrameSelectStepsOriginal(img);
 
         images.push({
           img: url,
           rects
         });
         // eslint-disable-next-line no-await-in-loop
-        await sleep();
+        await sleep(20);
         console.log(`${i + 1} / ${files.length}: ${file.name}`);
       }
-      console.log(images);
 
       addComics({
         title: uniqueNamesGenerator({
@@ -71,13 +69,12 @@ export default function Home(): JSX.Element {
           type="file"
           multiple
         />
-        <Col>123</Col>
       </Row>
       {comics.map((comic) => (
         <Row key={comic.id}>
           <Link href={`/read/${comic.id}`}>
             {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-            <a>{comic.title}</a>
+            <a style={{ textTransform: 'capitalize' }}>{comic.title}</a>
           </Link>
         </Row>
       ))}

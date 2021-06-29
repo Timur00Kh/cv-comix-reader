@@ -37,7 +37,7 @@ export const StageComponent: React.FC<Props> = ({
     const sorted = rects
       .slice()
       .sort(
-        settings.readOrder === ReadOrder.leftToRight
+        settings.readOrder === ReadOrder.rightToLeft
           ? PanelSorter.leftToRight
           : PanelSorter.rightToLeft
       );

@@ -197,6 +197,32 @@ export class FrameSelector {
     return result;
   }
 
+  static filterRects(rects: cv.Rect[], image: cv.Mat, t): cv.Rect[] {
+    const edge = Math.min(image.rows, image.cols);
+    const maxS = (edge * edge * t) / 100;
+    return rects.filter((rect) => {
+      const s = rect.width * rect.height;
+      return s < maxS;
+    });
+  }
+
+  static getFrameSelectStepsOriginal(
+    img: HTMLImageElement,
+    options?: FrameSelectStepsOptions
+  ): cv.Rect[] {
+    let original = cv.imread(img);
+    let greyscale = this.grayscale(original);
+    let threshold = this.threshold(greyscale, 30, 80);
+    let contours = this.findContours(threshold);
+    let convexHullContours = this.drawConvexHullContours(contours, original);
+
+    let greyscale2 = this.grayscale(convexHullContours);
+    const rects = this.getBounding(this.findContours(greyscale2));
+    const frects = this.filterRects(rects, original, 20);
+
+    return frects;
+  }
+
   static getFrameSelectSteps(
     img: HTMLImageElement,
     options?: FrameSelectStepsOptions
