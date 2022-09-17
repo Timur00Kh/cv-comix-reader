@@ -34,22 +34,14 @@ export const StageComponent: React.FC<Props> = ({
   }, [img]);
 
   const currentRects = useMemo(() => {
-    const sorted = rects
-      .slice()
-      .sort(
-        settings.readOrder === ReadOrder.rightToLeft
-          ? PanelSorter.leftToRight
-          : PanelSorter.rightToLeft
-      );
-
     const pageRect = {
       x: 0,
       y: 0,
-      width: image?.naturalWidth || 0,
-      height: image?.naturalHeight || 0
+      width: image?.naturalWidth || 600,
+      height: image?.naturalHeight || 600
     };
 
-    return [pageRect, ...sorted, pageRect];
+    return [pageRect, ...rects, pageRect];
   }, [rects, image, settings]);
 
   const computedStyles = useMemo<number[]>(() => {
@@ -87,7 +79,7 @@ export const StageComponent: React.FC<Props> = ({
     const callback = (e: KeyboardEvent) => {
       if (e.code === 'ArrowLeft') {
         prevPanel();
-      } else if (e.code === 'ArrowRight') {
+      } else if (['ArrowRight', 'Space'].includes(e.code)) {
         nextPanel();
       }
     };
@@ -108,7 +100,10 @@ export const StageComponent: React.FC<Props> = ({
     <>
       {settings.showDebugHint && (
         <pre className={classes.pre}>
-          <b>{i}:</b> {JSON.stringify(currentRects[i], null, 2)}
+          <b>
+            {i} / {currentRects.length - 1}:
+          </b>{' '}
+          {JSON.stringify(currentRects[i], null, 2)}
           <br />
           <b>styles:</b> {JSON.stringify(computedStyles, null, 2)}
         </pre>
@@ -122,7 +117,7 @@ export const StageComponent: React.FC<Props> = ({
         }}
       >
         {(values) => (
-          <div className={classes.stage} onClick={onStageClick}>
+          <div role="button" className={classes.stage} onClick={onStageClick}>
             <div className={classes.inner}>
               <div
                 className={classes.scale}

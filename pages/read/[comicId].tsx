@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { StageComponent } from '@/components/Stage/Stage';
-import _images from '@/pages/_images';
+import _images from '@/components/_images';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/root-reducer';
 import { useRouter } from 'next/router';
@@ -21,7 +21,7 @@ export default function Stage(): JSX.Element {
     comicId
   ]);
   const [i, setI] = useState<number>(0);
-  const curr = useMemo(() => currentComic.pages[i], [currentComic, i]);
+  const curr = useMemo(() => currentComic?.pages[i], [currentComic, i]);
 
   const r = () =>
     setI((i$) => (i$ < currentComic.pages.length - 1 ? i$ + 1 : i$));
@@ -29,12 +29,14 @@ export default function Stage(): JSX.Element {
 
   return (
     <div style={{ width: '100vw', height: '100vh', position: 'relative' }}>
-      <StageComponent
-        img={curr.img}
-        rects={curr.rects}
-        nextPage={r}
-        prevPage={l}
-      />
+      {curr && (
+        <StageComponent
+          img={curr.img}
+          rects={curr.rects}
+          nextPage={r}
+          prevPage={l}
+        />
+      )}
     </div>
   );
 }

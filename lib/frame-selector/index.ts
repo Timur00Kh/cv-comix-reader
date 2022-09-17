@@ -215,12 +215,23 @@ export class FrameSelector {
     let threshold = this.threshold(greyscale, 30, 80);
     let contours = this.findContours(threshold);
     let convexHullContours = this.drawConvexHullContours(contours, original);
+    let convexHullResult = this.morphologyOpen(convexHullContours, 20);
 
-    let greyscale2 = this.grayscale(convexHullContours);
+    let greyscale2 = this.grayscale(convexHullResult);
     const rects = this.getBounding(this.findContours(greyscale2));
     const frects = this.filterRects(rects, original, 20);
 
-    return frects;
+    [
+      original,
+      greyscale,
+      threshold,
+      contours,
+      convexHullContours,
+      convexHullResult,
+      greyscale2
+    ].forEach((mat) => mat.delete());
+
+    return rects;
   }
 
   static getFrameSelectSteps(

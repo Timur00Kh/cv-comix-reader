@@ -20,7 +20,7 @@ const initialState: ISettings = getLocalStorageJson(localStorageName) || {
 };
 
 // Actions
-export const setSettings = createAction<ISettings>('example/set');
+export const setSettings = createAction<ISettings>('settings/set');
 
 // Reducer
 const settings = createReducer<ISettings>(initialState, (builder) => {

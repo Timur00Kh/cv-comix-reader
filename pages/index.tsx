@@ -1,9 +1,7 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
-import { setExample } from '@/store/example';
-import Head from 'next/head';
-import { Button, Col, Container, Row } from 'reactstrap';
+import { Button, Container, Row } from 'reactstrap';
 import { FrameSelector, loadImage } from '@/lib/frame-selector';
 import sleep from '@/utils/sleep';
 import { RootState } from '@/store/root-reducer';
@@ -11,11 +9,11 @@ import { addComics as addComics$, IComics } from '@/store/comics';
 import { nanoid } from 'nanoid';
 import {
   uniqueNamesGenerator,
-  Config,
   adjectives,
   colors,
   animals
 } from 'unique-names-generator';
+import ReadmangaLoader from '@/components/ReadmangaLoader/readmanga';
 
 export default function Home(): JSX.Element {
   const input = useRef<HTMLInputElement>();
@@ -51,13 +49,17 @@ export default function Home(): JSX.Element {
           length: 3
         }),
         id: nanoid(),
-        pages: images
+        pages: images,
+        temp: true
       });
     }
   };
 
   return (
     <Container>
+      <Row className="mt-4 mb-4">
+        <ReadmangaLoader />
+      </Row>
       <Row className="mt-4 mb-4">
         <Button onClick={() => input?.current?.click()} outline color="success">
           Load Comics

@@ -92,7 +92,8 @@
         "ts": "never",
         "tsx": "never"
       }
-    ]
+    ],
+    "class-methods-use-this": "off"
   },
   "ignorePatterns": [
     "node_modules",

@@ -1,13 +1,18 @@
-declare let openCvLoaded;
+declare global {
+  interface Window {
+    openCvLoaded: boolean;
+  }
+}
 
 export default async function openCvReady(wait = 10000): Promise<boolean> {
+  window.openCvLoaded = window.openCvLoaded || false;
   let waited = 0;
   return new Promise((resolve, reject) => {
-    if (openCvLoaded) resolve(true);
+    if (window.openCvLoaded) resolve(true);
 
     const timeInterval = 100;
     const i = setInterval(() => {
-      if (openCvLoaded) {
+      if (window.openCvLoaded) {
         resolve(true);
         clearInterval(i);
       } else if (waited > wait) {

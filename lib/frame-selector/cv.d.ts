@@ -58,6 +58,8 @@ declare namespace cv {
     size(): number;
 
     get(i: number): Mat;
+
+    delete(): void;
   }
 
   class Scalar {

@@ -11,7 +11,7 @@ const initialState: IOpenCvReady = {
 };
 
 // Actions
-export const setOpenCvReady = createAction<IOpenCvReady>('example/set');
+export const setOpenCvReady = createAction<IOpenCvReady>('opencv/set');
 
 // Reducer
 export const openCvReady = createReducer<IOpenCvReady>(

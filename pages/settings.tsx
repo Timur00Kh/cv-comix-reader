@@ -1,5 +1,3 @@
-import { Head } from '@/components/Head';
-import Link from 'next/link';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store/root-reducer';
